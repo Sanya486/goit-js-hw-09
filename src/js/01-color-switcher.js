@@ -12,9 +12,8 @@ function switchBodyColor() {
     refs.startBtn.disabled = true;
     refs.stopBtn.disabled = false;
     document.body.style.backgroundColor = getRandomHexColor();
-    colorSwitcher = setInterval(() => {
-        const color = getRandomHexColor();
-        document.body.style.backgroundColor = color;
+    colorSwitcher = setInterval(() => { 
+        document.body.style.backgroundColor = getRandomHexColor();
     }, 1000);
 };
 
