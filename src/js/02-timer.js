@@ -1,5 +1,5 @@
 import flatpickr from 'flatpickr';
-import { Report } from 'notiflix/build/notiflix-report-aio';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import 'flatpickr/dist/flatpickr.min.css';
 
 
@@ -22,10 +22,7 @@ const options = {
     onClose(selectedDates) {
       if (selectedDates[0] <= new Date()) {
           isStartBtnDisabled(true);
-          Report.warning(
-            'Ooops',
-            '"Unfortunately, we cant set timer in the past for now. Pleas set date in the future or come back later.'
-          );
+          Notify.failure('Please choose a date in the future');
       }
       else {
           isStartBtnDisabled(false);
@@ -37,7 +34,9 @@ const options = {
 flatpickr(refs.inputEl, options);
 
 refs.startBtn.addEventListener('click', () => {
-    isStartBtnDisabled(true);
+  isInputDisabled(true);
+  isStartBtnDisabled(true);
+  
     timerUi(selectedPeriod);
     const timerId = setInterval(() => {
         if (selectedPeriod >= 1000) {
@@ -55,6 +54,10 @@ refs.startBtn.addEventListener('click', () => {
 
 function isStartBtnDisabled(boolean) {
     refs.startBtn.disabled = boolean;
+}
+
+function isInputDisabled(boolean) {
+  refs.inputEl.disabled = boolean;
 }
 
 function timerUi(selectedPeriod) {
