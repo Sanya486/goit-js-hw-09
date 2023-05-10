@@ -25,7 +25,6 @@ const options = {
       else {
           isStartBtnDisabled(false);
           selectedPeriod = selectedDates[0] - new Date()
-          console.log(selectedPeriod)
       }
   },
 };
