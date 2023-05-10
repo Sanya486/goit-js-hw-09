@@ -1,5 +1,7 @@
 import flatpickr from 'flatpickr';
+import { Report } from 'notiflix/build/notiflix-report-aio';
 import 'flatpickr/dist/flatpickr.min.css';
+
 
 const refs = {
   startBtn: document.querySelector('[data-start]'),
@@ -20,7 +22,10 @@ const options = {
     onClose(selectedDates) {
       if (selectedDates[0] <= new Date()) {
           isStartBtnDisabled(true);
-          alert('Please choose a date in the future');
+          Report.warning(
+            'Ooops',
+            '"Unfortunately, we cant set timer in the past for now. Pleas set date in the future or come back later.'
+          );
       }
       else {
           isStartBtnDisabled(false);
