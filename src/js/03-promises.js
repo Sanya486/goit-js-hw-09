@@ -17,7 +17,11 @@ refs.formEl.addEventListener('submit', e => {
   if (+refs.inputAmount.value < 0 || +refs.inputStep.value < 0 || +refs.inputDelay.value < 0) {
     Notify.warning(`All values ​​must be positive!`);
     return
-  } else {
+  }
+  else if(refs.inputAmount.value == 0) {
+    Notify.warning('Write amount more then 0!')
+  }
+  else {
     let firstDelay = Number(refs.inputDelay.value);
     let step = Number(refs.inputStep.value);
     let amount = Number(refs.inputAmount.value);
