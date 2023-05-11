@@ -15,7 +15,7 @@ refs.formEl.addEventListener('submit', e => {
   e.preventDefault();
 
   if (+refs.inputAmount.value < 0 || +refs.inputStep.value < 0 || +refs.inputDelay.value < 0) {
-    Notify.warning(`All values ​​must be positive!`);
+    Notify.warning(`Values ​​must not be negative!`);
     return
   }
   else if(refs.inputAmount.value == 0) {
