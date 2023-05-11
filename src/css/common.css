@@ -45,3 +45,11 @@ img {
 .label {
   text-transform: uppercase;
 }
+
+/* =========== TASK 3 =========== */
+
+.form label{
+  display: flex;
+  flex-direction: column;
+  max-width: 300px;
+}

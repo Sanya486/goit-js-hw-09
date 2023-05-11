@@ -1,3 +1,5 @@
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
+
 const refs = {
   inputDelay: document.querySelector('input[name=delay]'),
   inputStep: document.querySelector('input[name=step]'),
@@ -7,37 +9,62 @@ const refs = {
 };
 
 
-refs.formEl.addEventListener('submit', (e) => {
+
+refs.formEl.addEventListener('submit', e => {
+
   e.preventDefault();
-  let stepIncremet = +refs.inputStep.value;
-  setTimeout(() => {
-    for (let i = 1; i <= +refs.inputAmount.value; i++) {
-      createPromise(i, stepIncremet);
-      stepIncremet += +refs.inputStep.value
-    }
-  }, +refs.inputDelay.value);
+
+  if (+refs.inputAmount.value < 0 || +refs.inputStep.value < 0 || +refs.inputDelay.value < 0) {
+    Notify.warning(`All values ​​must be positive!`);
+    return
+  } else {
+    let firstDelay = Number(refs.inputDelay.value);
+    let step = Number(refs.inputStep.value);
+    let amount = Number(refs.inputAmount.value);
+    let messageIncrement = firstDelay;
+    let delayIncrement = 0;
+
+    setTimeout(() => {
+      createPromise(1, firstDelay)
+        .then(({ position, delay }) => {
+          Notify.success(`✅ Fulfilled promise ${position} in ${delay}ms`);
+        })
+        .catch(({ position, delay }) => {
+          Notify.failure(`❌ Rejected promise ${position} in ${delay}ms`);
+        });
+
+      for (let i = 2; i <= amount; i++) {
+        delayIncrement += step;
+        setTimeout(() => {
+          messageIncrement += step;
+
+          createPromise(i, messageIncrement)
+            .then(({ position, delay }) => {
+              Notify.success(`✅ Fulfilled promise ${position} in ${delay}ms`);
+            })
+            .catch(({ position, delay }) => {
+              Notify.failure(`❌ Rejected promise ${position} in ${delay}ms`);
+            });
+        }, delayIncrement);
+
+        if (i === amount) {
+          messageIncrement = firstDelay;
+          delayIncrement = 0;
+        }
+      }
+    }, firstDelay);
+  }
+
+  
 });
-
-
 
 function createPromise(position, delay) {
   const shouldResolve = Math.random() > 0.3;
-  setTimeout(() => {
-    return new Promise((resolve, reject) => {
-      if (shouldResolve) {
-        resolve({ position, delay });
-      } else {
-        reject({ position, delay });
-      }
-    })
-      .then(({ position, delay }) => {
-        console.log(`✅ Fulfilled promise ${position} in ${delay}ms`);
-      })
-      .catch(({ position, delay }) => {
-        console.log(`❌ Rejected promise ${position} in ${delay}ms`);
-      });
-  }, delay)
-
-  
-  
-};
+  return new Promise((resolve, reject) => {
+    if (shouldResolve) {
+      resolve({ position, delay });
+    } else {
+      reject({ position, delay });
+    }
+  });
+}
