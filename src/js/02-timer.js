@@ -33,24 +33,25 @@ const options = {
 
 flatpickr(refs.inputEl, options);
 
-refs.startBtn.addEventListener('click', () => {
-  isInputDisabled(true);
-  isStartBtnDisabled(true);
-  
+refs.startBtn.addEventListener('click', onTimerStart);
+
+function onTimerStart() {
+    isInputDisabled(true);
+    isStartBtnDisabled(true);
+
     timerUi(selectedPeriod);
     const timerId = setInterval(() => {
-        if (selectedPeriod >= 1000) {
-           selectedPeriod -= 1000;
-           timerUi(selectedPeriod); 
-        }
-        else {
-            clearInterval(timerId);
-        }
-        
-    }, 1000)
-})
+      if (selectedPeriod >= 1000) {
+        selectedPeriod -= 1000;
+        timerUi(selectedPeriod);
+      } else {
+        clearInterval(timerId);
+        isInputDisabled(false);
+        isStartBtnDisabled(false);
+      }
+    }, 1000);
 
-
+}
 
 function isStartBtnDisabled(boolean) {
     refs.startBtn.disabled = boolean;
@@ -76,13 +77,13 @@ function convertMs(ms) {
   const day = hour * 24;
 
   // Remaining days
-  const days = Math.floor(ms / day);
+  const days = String(Math.floor(ms / day)).padStart(2, '00');
   // Remaining hours
-  const hours = Math.floor((ms % day) / hour);
+  const hours = String(Math.floor((ms % day) / hour)).padStart(2, '00');
   // Remaining minutes
-  const minutes = Math.floor(((ms % day) % hour) / minute);
+  const minutes = String(Math.floor(((ms % day) % hour) / minute)).padStart(2, '00');
   // Remaining seconds
-  const seconds = Math.floor((((ms % day) % hour) % minute) / second);
+  const seconds = String(Math.floor((((ms % day) % hour) % minute) / second)).padStart(2, "00");
 
   return { days, hours, minutes, seconds };
 };

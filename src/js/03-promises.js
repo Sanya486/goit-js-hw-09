@@ -13,62 +13,50 @@ const refs = {
 refs.formEl.addEventListener('submit', e => {
 
   e.preventDefault();
-
+  // Вирішив залишити строгу рівність у 17 рядку, оскільки є окрема перевірка на amount у 21 рядку.
   if (+refs.inputAmount.value < 0 || +refs.inputStep.value < 0 || +refs.inputDelay.value < 0) {
     Notify.warning(`Values ​​must not be negative!`);
     return
   }
-  else if(refs.inputAmount.value == 0) {
+  else if(refs.inputAmount.value == 0) { 
     Notify.warning('Write amount more then 0!')
   }
   else {
     let firstDelay = Number(refs.inputDelay.value);
     let step = Number(refs.inputStep.value);
     let amount = Number(refs.inputAmount.value);
-    let messageIncrement = firstDelay;
-    let delayIncrement = 0;
 
-    setTimeout(() => {
-      createPromise(1, firstDelay)
-        .then(({ position, delay }) => {
+    for (let i = 1; i <= amount; i++){
+      if (i === 1) {
+        createPromise(i, firstDelay).then(({ position, delay }) => {
           Notify.success(`✅ Fulfilled promise ${position} in ${delay}ms`);
         })
         .catch(({ position, delay }) => {
           Notify.failure(`❌ Rejected promise ${position} in ${delay}ms`);
         });
-
-      for (let i = 2; i <= amount; i++) {
-        delayIncrement += step;
-        setTimeout(() => {
-          messageIncrement += step;
-
-          createPromise(i, messageIncrement)
-            .then(({ position, delay }) => {
-              Notify.success(`✅ Fulfilled promise ${position} in ${delay}ms`);
-            })
-            .catch(({ position, delay }) => {
-              Notify.failure(`❌ Rejected promise ${position} in ${delay}ms`);
-            });
-        }, delayIncrement);
-
-        if (i === amount) {
-          messageIncrement = firstDelay;
-          delayIncrement = 0;
-        }
       }
-    }, firstDelay);
-  }
-
+      else {
+        createPromise(i, firstDelay + step * (i -1)).then(({ position, delay }) => {
+          Notify.success(`✅ Fulfilled promise ${position} in ${delay}ms`);
+        })
+        .catch(({ position, delay }) => {
+          Notify.failure(`❌ Rejected promise ${position} in ${delay}ms`);
+        });
+      };
+    };
+  };
   
 });
 
 function createPromise(position, delay) {
   const shouldResolve = Math.random() > 0.3;
   return new Promise((resolve, reject) => {
-    if (shouldResolve) {
-      resolve({ position, delay });
-    } else {
-      reject({ position, delay });
-    }
+    setTimeout(() => {
+      if (shouldResolve) {
+        resolve({ position, delay });
+      } else {
+        reject({ position, delay });
+      }
+    }, delay) 
   });
 }
